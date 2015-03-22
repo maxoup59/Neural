@@ -11,7 +11,7 @@ public:
     int getOutput() {return output;};
     void setCoeff(QVector<float> pCoeff){coeff = pCoeff;};
     QVector<float> getCoeff() {return coeff;};
-    void think();
+    float think();
 private:
     QVector<float> input;
     QVector<float> coeff;

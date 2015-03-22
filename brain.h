@@ -18,6 +18,7 @@ private:
     bool finDemandee;
     int nbPoney;
     QVector<Neuron*> listNeuron;
+    void tri(QVector<float>);
 
 };
 

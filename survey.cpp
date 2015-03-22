@@ -17,7 +17,7 @@ void Survey::run()
     db.setDatabaseName("test.dev.db");
     if(!db.open() || !db.isValid())
     {
-        qDebug() <<("run : can't open DB");
+        qDebug() << "run : can't open DB";
     }
     else
     {
@@ -30,7 +30,9 @@ void Survey::run()
         listBrain.push_back(new Brain());
         listBrain[i]->setNbPoney(nbPoney);
         listBrain[i]->dataPoney = data;
+        listBrain[i]->start();
     }
+
 }
 
 QVector<Poney*> Survey::getCourseData()
