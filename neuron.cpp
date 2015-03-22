@@ -16,9 +16,8 @@ float Neuron::think()
     for(int i = 0 ;i < input.length() ; i ++)
     {
         total += input[i]*coeff[i];
-        total /= input.length();
     }
-    output = 1/1+qExp(-total);
+    output = 1/(1+qExp(-total));
     return output;
 }
 
