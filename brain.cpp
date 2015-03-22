@@ -13,7 +13,8 @@ Brain::~Brain()
 
 void Brain::run()
 {
-   // while(finDemandee)
+   bool goodResult = false;
+   while(goodResult)
     {
         for (int i = 0; i< nbPoney ; i ++)
         {
@@ -41,11 +42,13 @@ void Brain::run()
             listNeuron[i]->setInput(input);
             result.push_back(listNeuron[i]->think());
         }
-        tri(result);
+        if(tri(result) == expected)
+            goodResult = true;
     }
+   emit resultOKAY();
 }
 
-void Brain::tri(QVector<float> result)
+int Brain::tri(QVector<float> result)
 {
     float top = 0;
     for (int i = 0; i < result.length() ; i++)
@@ -57,6 +60,7 @@ void Brain::tri(QVector<float> result)
         }
     }
     int first = result.indexOf(top);
+    emit cycleFinished(first);
     qDebug() << first;
 }
 

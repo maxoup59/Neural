@@ -30,9 +30,11 @@ void Survey::run()
         listBrain.push_back(new Brain());
         listBrain[i]->setNbPoney(nbPoney);
         listBrain[i]->dataPoney = data;
+        listBrain[i]->expected = expected;
+        connect(listBrain[i],SIGNAL(cycleFinished(int)),this,SLOT(onCycleFinished(int)));
+        connect(listBrain[i],SIGNAL(resultOKAY()),this,SLOT(onResultOKAY()));
         listBrain[i]->start();
     }
-
 }
 
 QVector<Poney*> Survey::getCourseData()
@@ -45,7 +47,7 @@ QVector<Poney*> Survey::getCourseData()
     }
     QString query = "SELECT CoursesCheval,VictoiresCheval,PlacesCheval,CoursesEntraineur"
                     ",VictoiresEntraineur,PlaceEntraineur,CoursesJockey,VictoiresJockey"
-                    ",PlaceJockey,SexeAge,partant FROM PoneyDB where jour = '2015-03-02' and PMU = 'oui'"
+                    ",PlaceJockey,SexeAge,partant,Arrive FROM PoneyDB where jour = '2015-03-02' and PMU = 'oui'"
                     " and Categorie = 'Course B'";
     QSqlQuery getData;
     if(!getData.exec(query))
@@ -70,8 +72,22 @@ QVector<Poney*> Survey::getCourseData()
             }
             data[nb]->age = QString(getData.value(9).toString()[1]).toInt();
             nbPoney = getData.value(10).toInt();
+            QStringList arrival = getData.value(11).toString().split("-");
+            expected = arrival[0].toInt();
         }
     }
     return data;
 }
+
+void Survey::onCycleFinished(int value)
+{
+
+}
+
+void Survey::onResultOKAY()
+{
+    //getCourseData();
+
+}
+
 
