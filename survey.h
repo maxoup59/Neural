@@ -4,14 +4,14 @@
 #include <QThread>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-
+#include "poney.h"
 class Survey : public QThread
 {
 public:
     Survey();
     ~Survey();
     void run();
-    void getCourseData();
+    QVector<Poney*> getCourseData();
     int nbPoney;
     QSqlDatabase db;
 };

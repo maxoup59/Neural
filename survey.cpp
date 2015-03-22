@@ -29,6 +29,7 @@ void Survey::run()
     {
         listBrain.push_back(new Brain());
         listBrain[i]->setNbPoney(nbPoney);
+        listBrain[i]->dataPoney = data;
     }
 }
 
@@ -42,12 +43,12 @@ QVector<Poney*> Survey::getCourseData()
     }
     QString query = "SELECT CoursesCheval,VictoiresCheval,PlacesCheval,CoursesEntraineur"
                     ",VictoiresEntraineur,PlaceEntraineur,CoursesJockey,VictoiresJockey"
-                    ",PlaceJockey,SexeAge FROM PoneyDB where jour = '2015-03-02' and PMU = 'oui'"
+                    ",PlaceJockey,SexeAge,partant FROM PoneyDB where jour = '2015-03-02' and PMU = 'oui'"
                     " and Categorie = 'Course B'";
     QSqlQuery getData;
     if(!getData.exec(query))
     {
-        qDebug() << "Error querry";
+        qDebug() << "Error query";
     }
     else
     {
@@ -66,6 +67,7 @@ QVector<Poney*> Survey::getCourseData()
                 data[nb]->sexe = 0;
             }
             data[nb]->age = QString(getData.value(9).toString()[1]).toInt();
+            nbPoney = getData.value(10).toInt();
         }
     }
     return data;

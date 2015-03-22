@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QtGlobal>
 #include "neuron.h"
+#include "poney.h"
 class Brain : public QThread
 {
 public:
@@ -12,10 +13,12 @@ public:
     void run();
     void setFinDemandee(bool pFin){finDemandee=pFin;}
     void setNbPoney(int pNbPoney){nbPoney=pNbPoney;}
+    QVector<Poney*> dataPoney;
 private:
     bool finDemandee;
     int nbPoney;
-    QVector<Neuron*> listPoney;
+    QVector<Neuron*> listNeuron;
+
 };
 
 #endif // BRAIN_H
