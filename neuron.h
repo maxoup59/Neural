@@ -15,7 +15,7 @@ public:
 private:
     QVector<float> input;
     QVector<float> coeff;
-    int output;
+    float output;
 };
 
 #endif // NEURON_H

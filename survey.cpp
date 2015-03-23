@@ -31,6 +31,7 @@ void Survey::run()
     {
         listBrain.push_back(new Brain());
         listBrain[i]->id = i;
+        listBrain[i]->dataPoney = getCourseData(listBrain[i]->currentDate);
         connect(listBrain[i],SIGNAL(cycleFinished(int)),this,SLOT(onCycleFinished(int)));
         connect(listBrain[i],SIGNAL(wantMoreData(int)),this,SLOT(onWantMoreData(int)));
         listBrain[i]->start();
@@ -40,11 +41,11 @@ void Survey::run()
 QVector<Price *> Survey::getCourseData(QDate pCurrentDate)
 {
     //Get list price of the day
-    QVector<Price*> dataOfTheday;
+    QVector<Price*> dataOfTheDay;
     //QVector<Poney*> data;
-    QString query = "SELECT prix,count() FROM PoneyDB where jour = '"+pCurrentDate.toString("yyyy-MM-dd")+"' and PMU = 'oui' group by prix";
+    QString queryGetDayPrice = "SELECT prix,count() FROM PoneyDB where jour = '"+pCurrentDate.toString("yyyy-MM-dd")+"' and PMU = 'oui' group by prix";
     QSqlQuery getDayPrix;
-    if(getDayPrix.exec(query))
+    if(getDayPrix.exec(queryGetDayPrice))
     {
         while(getDayPrix.next())
         {
@@ -56,12 +57,13 @@ QVector<Price *> Survey::getCourseData(QDate pCurrentDate)
             {
                 data.push_back(new Poney());
             }
-            QString query = "SELECT CoursesCheval,VictoiresCheval,PlacesCheval,CoursesEntraineur"
+            QString queryGetData = "SELECT CoursesCheval,VictoiresCheval,PlacesCheval,CoursesEntraineur"
                             ",VictoiresEntraineur,PlaceEntraineur,CoursesJockey,VictoiresJockey"
                             ",PlaceJockey,SexeAge,partant,Arrive FROM PoneyDB where jour = '"+pCurrentDate.toString("yyyy-MM-dd")+"' and PMU = 'oui'"
                                                                                                                                  " and prix ='" + temp->name +"'";
+            //qDebug() << queryGetData;
             QSqlQuery getData;
-            if(!getData.exec(query))
+            if(!getData.exec(queryGetData))
             {
                 qDebug() << "Error query";
             }
@@ -71,7 +73,7 @@ QVector<Price *> Survey::getCourseData(QDate pCurrentDate)
                 while(getData.next())
                 {
                     data[nb]->ratioPoney = (float)getData.value(1).toInt() / (float)getData.value(0).toInt();
-                    data[nb]->ratioTrainer = (float)getData.value(3).toInt() / (float)getData.value(4).toInt();
+                    data[nb]->ratioTrainer = (float)getData.value(4).toInt() / (float)getData.value(3).toInt();
                     data[nb]->ratioJockey = (float)getData.value(7).toInt() / (float)getData.value(6).toInt();
                     if(getData.value(9).toString()[0] == 'M')
                     {
@@ -86,10 +88,10 @@ QVector<Price *> Survey::getCourseData(QDate pCurrentDate)
                 }
             }
             temp->listOfPoney = data;
-            dataOfTheday.push_back(temp);
+            dataOfTheDay.push_back(temp);
         }
     }
-    return dataOfTheday;
+    return dataOfTheDay;
 }
 void Survey::initCourseData()
 {
@@ -107,8 +109,6 @@ void Survey::initCourseData()
 }
 
 
-
-
 void Survey::onCycleFinished(int value)
 {
     qDebug() << "Cycle END";
@@ -116,39 +116,12 @@ void Survey::onCycleFinished(int value)
 
 void Survey::onWantMoreData(int id)
 {
+    qDebug() << "Brain nb : " +QString::number(id) + "Want more data";
     QDate brainCurrentDate = listBrain[id]->currentDate;
     QVector<Price*> data = getCourseData(brainCurrentDate);
     listBrain[id]->dataPoney = data;
     listBrain[id]->expected = expected;
     listBrain[id]->start();
 }
-
-/*void Survey::onResultOKAY()
-{
-    //getCourseData();
-    //getNewData();
-    qDebug() << "RESULT FOUND : " + currentDate.toString("yyyy-MM-dd") + currentPrice;
-    currentPrice++;
-    //
-    if(currentPrice < listPriceCurrentDay.length())
-    {
-        QVector<Poney*> data = getCourseData();
-        for (int i = 0 ;i < 5 ; i ++)
-        {
-            listBrain[i]->setNbPoney(listNbPoneyByPrice[currentPrice]);
-            listBrain[i]->dataPoney = data;
-            listBrain[i]->expected = expected;
-            connect(listBrain[i],SIGNAL(cycleFinished(int)),this,SLOT(onCycleFinished(int)));
-            connect(listBrain[i],SIGNAL(resultOKAY()),this,SLOT(onResultOKAY()));
-            listBrain[i]->start();
-        }
-    }
-    else
-    {
-        currentDate = currentDate.addDays(1);
-        initCourseData();
-        currentPrice = 0;
-    }
-}*/
 
 

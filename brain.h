@@ -29,6 +29,8 @@ private:
     int nbPoney;
     QVector<Neuron*> listNeuron;
     int tri(QVector<float>);
+    int nbSuccess;
+    int nbTry;
 
 };
 
