@@ -5,7 +5,8 @@
 #include <QtGlobal>
 #include "neuron.h"
 #include "poney.h"
-
+#include <QDate>
+#include "price.h"
 class Brain : public QThread
 {
     Q_OBJECT
@@ -15,11 +16,14 @@ public:
     void run();
     void setFinDemandee(bool pFin){finDemandee=pFin;}
     void setNbPoney(int pNbPoney){nbPoney=pNbPoney;}
-    QVector<Poney*> dataPoney;
+    QVector<Price*> dataPoney;
     int expected;
+    int id;
+    int currentPrice;
+    QDate currentDate;
 signals:
     void cycleFinished(int);
-    void resultOKAY();
+    void wantMoreData(int id);
 private:
     bool finDemandee;
     int nbPoney;

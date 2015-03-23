@@ -8,6 +8,7 @@
 #include <QDate>
 #include <QVector>
 #include "brain.h"
+#include "price.h"
 class Survey : public QThread
 {
     Q_OBJECT
@@ -15,7 +16,7 @@ public:
     Survey();
     ~Survey();
     void run();
-    QVector<Poney *> getCourseData();
+    QVector<Price *> getCourseData(QDate pCurrentDate);
      QVector<Brain*> listBrain;
     void initCourseData();
     int nbPoney;
@@ -23,7 +24,7 @@ public:
     int expected;
 private slots:
     void onCycleFinished(int);
-    void onResultOKAY();
+    void onWantMoreData(int);
 private:
     QVector<QString> listPriceCurrentDay;
     QVector<int> listNbPoneyByPrice;

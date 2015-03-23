@@ -18,12 +18,14 @@ SOURCES += main.cpp\
     neuron.cpp \
     brain.cpp \
     survey.cpp \
-    poney.cpp
+    poney.cpp \
+    price.cpp
 
 HEADERS  += mainwindow.h \
     neuron.h \
     brain.h \
     survey.h \
-    poney.h
+    poney.h \
+    price.h
 
 FORMS    += mainwindow.ui
