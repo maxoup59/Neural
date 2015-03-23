@@ -1,5 +1,5 @@
 #include "neuron.h"
-
+#include <Qdebug>
 Neuron::Neuron()
 {
 
@@ -16,8 +16,10 @@ float Neuron::think()
     for(int i = 0 ;i < input.length() ; i ++)
     {
         total = (float)(input[i]*coeff[i]);
+        //qDebug() << QString::number(input[i]);
     }
     output = 1/(1+qExp(-total));
+    //qDebug() << QString::number(output);
     return output;
 }
 

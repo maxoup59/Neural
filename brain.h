@@ -24,6 +24,7 @@ public:
 signals:
     void cycleFinished(int);
     void wantMoreData(int id);
+    void somethingToSay(int,QString);
 private:
     bool finDemandee;
     int nbPoney;
@@ -31,6 +32,7 @@ private:
     int tri(QVector<float>);
     int nbSuccess;
     int nbTry;
+    void init();
 
 };
 

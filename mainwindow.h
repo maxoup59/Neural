@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QLabel>
 
 namespace Ui {
 class MainWindow;
@@ -17,9 +18,11 @@ public:
 
 private slots:
     void on_pushButton_clicked();
+    void onSomethingToSay(int,QString);
 
 private:
     Ui::MainWindow *ui;
+    QVector<QLabel*> label;
 };
 
 #endif // MAINWINDOW_H

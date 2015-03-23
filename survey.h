@@ -22,9 +22,12 @@ public:
     int nbPoney;
     QSqlDatabase db;
     int expected;
+signals:
+    void somethingToSay(int,QString);
 private slots:
     void onCycleFinished(int);
     void onWantMoreData(int);
+    void onSomethingToSay(int,QString);
 private:
     QVector<QString> listPriceCurrentDay;
     QVector<int> listNbPoneyByPrice;
