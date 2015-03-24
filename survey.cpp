@@ -27,7 +27,7 @@ void Survey::run()
         qDebug() << "BDD OPEN";
     }
     //initCourseData();
-    for (int i = 0 ;i < 2 ; i ++)
+    for (int i = 0 ;i < 1 ; i ++)
     {
         listBrain.push_back(new Brain());
         listBrain[i]->id = i;

@@ -19,6 +19,8 @@ float Neuron::think()
         //qDebug() << QString::number(input[i]);
     }
     output = 1/(1+qExp(-total));
+    output -= 0.5;
+    output *= 2;
     //qDebug() << QString::number(output);
     return output;
 }
