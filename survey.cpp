@@ -7,7 +7,7 @@ Survey::Survey()
 {
     db = QSqlDatabase::addDatabase("QSQLITE");
     currentDate.setDate(2015,02,02);
-    currentPrice =0;
+    currentPrice = 0;
 }
 
 Survey::~Survey()
@@ -46,6 +46,7 @@ QVector<QVector<Price*> > Survey::getCourseData()
     while (startDate != endDate)
     {
         //Get list price of the day
+        qDebug() << startDate.toString("yyyy-MM-dd");
         QVector<Price*> dataOfTheDay;
         //QVector<Poney*> data;
         QString queryGetDayPrice = "SELECT prix,count() FROM PoneyDB where jour = '"+startDate.toString("yyyy-MM-dd")+"' and PMU = 'oui' group by prix";
@@ -54,8 +55,10 @@ QVector<QVector<Price*> > Survey::getCourseData()
         {
             while(getDayPrix.next())
             {
+
                 Price *temp = new Price();
                 temp->name = getDayPrix.value(0).toString();
+                qDebug () << temp->name;
                 temp->nbOfPoney = getDayPrix.value(1).toString().toInt();
                 QString queryGetData = "SELECT CoursesCheval,VictoiresCheval,PlacesCheval,CoursesEntraineur"
                                        ",VictoiresEntraineur,PlaceEntraineur,CoursesJockey,VictoiresJockey"
