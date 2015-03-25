@@ -16,11 +16,12 @@ public:
     void run();
     void setFinDemandee(bool pFin){finDemandee=pFin;}
     void setNbPoney(int pNbPoney){nbPoney=pNbPoney;}
-    QVector<Price*> dataPoney;
+    QVector<QVector<Price*> > dataPoney;
     int expected;
     int id;
     int currentPrice;
-    QDate currentDate;
+    int currentDate;
+
 signals:
     void cycleFinished(int);
     void wantMoreData(int id);
