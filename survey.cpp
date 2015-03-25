@@ -27,7 +27,7 @@ void Survey::run()
         qDebug() << "BDD OPEN";
     }
     //initCourseData();
-    for (int i = 0 ;i < 1 ; i ++)
+    for (int i = 0 ;i < 5 ; i ++)
     {
         listBrain.push_back(new Brain());
         listBrain[i]->id = i;
@@ -124,6 +124,7 @@ void Survey::onWantMoreData(int id)
 {
     qDebug() << "Brain nb : " +QString::number(id) + "Want more data";
     QDate brainCurrentDate = listBrain[id]->currentDate;
+    qDebug() << brainCurrentDate.toString("yyyy-MM-dd");
     QVector<Price*> data = getCourseData(brainCurrentDate);
     listBrain[id]->dataPoney = data;
     listBrain[id]->expected = expected;

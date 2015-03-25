@@ -25,6 +25,7 @@ void MainWindow::on_pushButton_clicked()
     Survey*test = new Survey();
     connect(test,SIGNAL(somethingToSay(int,QString)),this,SLOT(onSomethingToSay(int,QString)));
     test->nbPoney = 14;
+    //test->exec();
     test->start();
 }
 

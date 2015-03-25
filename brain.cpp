@@ -3,7 +3,7 @@
 #include <QDebug>
 Brain::Brain()
 {
-    currentDate.setDate(2015,01,01);
+    currentDate.setDate(2013,01,01);
     currentPrice = 0;
     nbTry = 0;
     nbSuccess = 0;
@@ -16,9 +16,9 @@ Brain::~Brain()
 
 void Brain::run()
 {
-    bool end = true;
+    bool go = true;
     init();
-    while(end)
+    while(go)
     {
         QVector<float> coeff;
         for (int i = 0; i < 6 ; i++)
@@ -43,13 +43,16 @@ void Brain::run()
             result.push_back((float)listNeuron[i]->think());
         }
         QStringList first = dataPoney[currentPrice]->arrive.split("-");
+        // qDebug() << dataPoney[currentPrice]->arrive;
         nbTry++;
-        if(nbTry%10000 == 0)
+        if(nbTry%100 == 0)
         {
-            //qDebug() << QString::number(nbSuccess) + "/" + QString::number(nbTry);
-            emit somethingToSay(id,QString::number(nbSuccess) + "/" + QString::number(nbTry));
+            qDebug() << "ID : " + QString::number(id) + "  " + QString::number(nbSuccess) + "/" + QString::number(nbTry);
+            //emit somethingToSay(id,QString::number(nbSuccess) + "/" + QString::number(nbTry));
         }
-        if(tri(result) == first[0].toInt())
+        int firstBrain = tri(result);
+        //qDebug() << QString::number(firstBrain) +" "+ first[0];
+        if(firstBrain == first[0].toInt())
         {
             nbSuccess++;
         }
@@ -57,11 +60,18 @@ void Brain::run()
         {
             if(currentDate.toString("yyyy-MM-dd") == "2015-03-09")
             {
-               end = true;
-               qDebug() << "no more data";
+                go = false;
+                qDebug() << "no more data";
             }
-            end = true;
-            emit wantMoreData(id);
+            else
+            {
+                go = true;
+                currentPrice = 0;
+                //qDebug() << currentDate.toString("yyyy-MM-dd");
+                currentDate = currentDate.addDays(1);
+                //qDebug() << currentDate.toString("yyyy-MM-dd");
+                emit wantMoreData(id);
+            }
         }
         else
         {
@@ -101,14 +111,12 @@ int Brain::tri(QVector<float> result)
     float top = 0;
     for (int i = 0; i < result.length() ; i++)
     {
-        //qDebug() << result[i];
         if (result[i] > top)
         {
             top = result[i];
         }
     }
     int first = result.indexOf(top);
-    //qDebug() << QString::number(first);
     return first;
 }
 

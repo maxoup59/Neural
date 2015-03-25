@@ -15,7 +15,7 @@ float Neuron::think()
     float total = 0;
     for(int i = 0 ;i < input.length() ; i ++)
     {
-        total = (float)(input[i]*coeff[i]);
+        total += (float)(input[i]*coeff[i]);
         //qDebug() << QString::number(input[i]);
     }
     output = 1/(1+qExp(-total));
