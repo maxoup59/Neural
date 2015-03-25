@@ -16,8 +16,9 @@ public:
     Survey();
     ~Survey();
     void run();
-    QVector<QVector<Price*> > getCourseData();
-    QVector<Brain*> listBrain;
+    QVector<Price *> getCourseData(QDate pCurrentDate);
+     QVector<Brain*> listBrain;
+    void initCourseData();
     int nbPoney;
     QSqlDatabase db;
     int expected;
@@ -25,6 +26,7 @@ signals:
     void somethingToSay(int,QString);
 private slots:
     void onCycleFinished(int);
+    void onWantMoreData(int);
     void onSomethingToSay(int,QString);
 private:
     QVector<QString> listPriceCurrentDay;
