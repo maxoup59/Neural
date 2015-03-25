@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <cstdlib>
 #include "survey.h"
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -22,7 +23,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    Survey*test = new Survey();
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"../../../");
+    Survey*test = new Survey(fileName);
     connect(test,SIGNAL(somethingToSay(int,QString)),this,SLOT(onSomethingToSay(int,QString)));
     test->nbPoney = 14;
     //test->exec();

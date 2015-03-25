@@ -20,7 +20,6 @@ public:
     float CourueJockeyJour;
     float VictoireJocKeyJour;
     float MonteEntraineurJour;
-    float MonteEntraineurJour;
     float CourueEntraineurJour;
     float VictoireEntraineurJour;
     float DernierePlace;

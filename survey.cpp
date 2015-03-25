@@ -3,11 +3,14 @@
 #include <QDebug>
 #include "brain.h"
 #include "price.h"
-Survey::Survey()
+Survey::Survey(QString pFilename)
 {
+    filename = pFilename;
     db = QSqlDatabase::addDatabase("QSQLITE");
     currentDate.setDate(2015,02,02);
     currentPrice =0;
+    bestID = -1;
+    bestRatio = 0;
 }
 
 Survey::~Survey()
@@ -17,7 +20,7 @@ Survey::~Survey()
 
 void Survey::run()
 {
-    db.setDatabaseName("test.dev.db");
+    db.setDatabaseName(filename);
     if(!db.open() || !db.isValid())
     {
         qDebug() << "run : can't open DB";
@@ -116,25 +119,25 @@ QVector<Price *> Survey::getCourseData(QDate pCurrentDate)
     }
     return dataOfTheDay;
 }
-void Survey::initCourseData()
-{
-    QVector<Poney*> data;
-    QString query = "SELECT prix,count() FROM PoneyDB where jour = '"+currentDate.toString("yyyy-MM-dd")+"' and PMU = 'oui' group by prix";
-    QSqlQuery getDayPrix;
-    if(getDayPrix.exec(query))
-    {
-        while(getDayPrix.next())
-        {
-            listPriceCurrentDay.push_back(getDayPrix.value(0).toString());
-            listNbPoneyByPrice.push_back(getDayPrix.value(1).toString().toInt());
-        }
-    }
-}
 
 
 void Survey::onCycleFinished(int value)
 {
     qDebug() << "Cycle END";
+}
+
+void Survey::onNoMoreData(QVector<float> coeff, float ratio , int id)
+{
+    listresult.push_back(coeff);
+    if(ratio > bestRatio)
+    {
+        bestRatio = ratio;
+        bestID = id;
+    }
+    if(listresult.length() == 5)
+    {
+
+    }
 }
 
 void Survey::onWantMoreData(int id)

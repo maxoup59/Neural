@@ -13,7 +13,7 @@ class Survey : public QThread
 {
     Q_OBJECT
 public:
-    Survey();
+    Survey(QString filename = "test.dev.db");
     ~Survey();
     void run();
     QVector<Price *> getCourseData(QDate pCurrentDate);
@@ -26,13 +26,18 @@ signals:
     void somethingToSay(int,QString);
 private slots:
     void onCycleFinished(int);
+    void onNoMoreData(QVector<float>,float);
     void onWantMoreData(int);
     void onSomethingToSay(int,QString);
 private:
     QVector<QString> listPriceCurrentDay;
+    QVector<QVector<float> > listresult;
+    int bestID;
+    float bestRatio;
     QVector<int> listNbPoneyByPrice;
     int currentPrice;
     QDate currentDate;
+    QString filename;
 };
 
 #endif // SURVEY_H
