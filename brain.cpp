@@ -3,7 +3,7 @@
 #include <QDebug>
 Brain::Brain()
 {
-    currentDate.setDate(2013,01,01);
+    currentDate.setDate(2014,01,01);
     currentPrice = 0;
     nbTry = 0;
     nbSuccess = 0;
@@ -39,6 +39,20 @@ void Brain::run()
             input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->ratioTrainer);
             input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->sexe);
             input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->age);
+
+            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->CoteDirect);
+            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->CoteProb);
+            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->CourueEntraineurJour);
+            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->CourueJockeyJour);
+            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->DerniereCote);
+            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->DernierePlace);
+            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->MonteEntraineurJour);
+            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->MontesduJockeyJour);
+            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->NbCoursePropJour);
+            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->Recence);
+            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->VictoireEntraineurJour);
+            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->VictoireJocKeyJour);
+
             listNeuron[i]->setInput(input);
             result.push_back((float)listNeuron[i]->think());
         }
@@ -62,6 +76,7 @@ void Brain::run()
             {
                 go = false;
                 qDebug() << "no more data";
+                //emit noMoreData(id);
             }
             else
             {
@@ -102,6 +117,20 @@ void Brain::init()
         input.push_back(dataPoney[currentPrice]->listOfPoney[i]->ratioTrainer);
         input.push_back(dataPoney[currentPrice]->listOfPoney[i]->sexe);
         input.push_back(dataPoney[currentPrice]->listOfPoney[i]->age);
+
+        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->CoteDirect);
+        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->CoteProb);
+        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->CourueEntraineurJour);
+        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->CourueJockeyJour);
+        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->DerniereCote);
+        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->DernierePlace);
+        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->MonteEntraineurJour);
+        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->MontesduJockeyJour);
+        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->NbCoursePropJour);
+        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->Recence);
+        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->VictoireEntraineurJour);
+        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->VictoireJocKeyJour);
+
         listNeuron[i]->setInput(input);
         result.push_back((float)listNeuron[i]->think());
     }

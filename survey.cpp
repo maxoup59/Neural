@@ -35,7 +35,7 @@ void Survey::run()
         connect(listBrain[i],SIGNAL(cycleFinished(int)),this,SLOT(onCycleFinished(int)));
         connect(listBrain[i],SIGNAL(wantMoreData(int)),this,SLOT(onWantMoreData(int)));
         connect(listBrain[i],SIGNAL(somethingToSay(int,QString)),this,SLOT(onSomethingToSay(int,QString)));
-        listBrain[i]->start();
+        listBrain[i]->run();
     }
 }
 
@@ -55,7 +55,11 @@ QVector<Price *> Survey::getCourseData(QDate pCurrentDate)
             temp->nbOfPoney = getDayPrix.value(1).toString().toInt();
             QString queryGetData = "SELECT CoursesCheval,VictoiresCheval,PlacesCheval,CoursesEntraineur"
                             ",VictoiresEntraineur,PlaceEntraineur,CoursesJockey,VictoiresJockey"
-                            ",PlaceJockey,SexeAge,partant,Arrive,PlacesCheval FROM PoneyDB where jour = '"+pCurrentDate.toString("yyyy-MM-dd")+"' and PMU = 'oui'"
+                            ",PlaceJockey,SexeAge,partant,Arrive,CoteProb,CoteDirect"
+                            ",Recence,MontesduJockeyJour,CourueJockeyJour,VictoireJocKeyJour"
+                            ",MonteEntraineurJour,CourueEntraineurJour,VictoireEntraineurJour"
+                            ", DernierePlace,DerniereCote"
+                            ",NbCoursePropJour FROM PoneyDB where jour = '"+pCurrentDate.toString("yyyy-MM-dd")+"' and PMU = 'oui'"
                                                                                                                                  " and prix ='" + temp->name +"'";
             //qDebug() << queryGetData;
             QSqlQuery getData;
@@ -76,9 +80,22 @@ QVector<Price *> Survey::getCourseData(QDate pCurrentDate)
                     float ratioPoney = (getData.value(1).toFloat()+getData.value(12).toFloat()) / (getData.value(0).toFloat());
                     float ratioTrainer = getData.value(4).toFloat() / getData.value(3).toFloat();
                     float ratioJockey = getData.value(7).toFloat() / getData.value(6).toFloat();
+                    data[nb]->CoteDirect = getData.value(13).toFloat();
+                    data[nb]->CoteProb = getData.value(12).toFloat();
+                    data[nb]->CourueEntraineurJour = getData.value(19).toFloat();
+                    data[nb]->CourueJockeyJour = getData.value(16).toFloat();
+                    data[nb]->DerniereCote = getData.value(22).toFloat();
+                    data[nb]->DernierePlace = getData.value(21).toFloat();
+                    data[nb]->MonteEntraineurJour = getData.value(18).toFloat();
+                    data[nb]->MontesduJockeyJour = getData.value(15).toFloat();
+                    data[nb]->NbCoursePropJour = getData.value(23).toFloat();
+                    data[nb]->VictoireEntraineurJour = getData.value(20).toFloat();
+                    data[nb]->VictoireJocKeyJour = getData.value(17).toFloat();
+                    data[nb]->Recence = getData.value(14).toFloat();
                     data[nb]->ratioPoney = ratioPoney;
                     data[nb]->ratioTrainer = ratioTrainer;
                     data[nb]->ratioJockey = ratioJockey;
+
                     if(getData.value(9).toString()[0] == 'M')
                     {
                         data[nb]->sexe = 1;
@@ -128,7 +145,7 @@ void Survey::onWantMoreData(int id)
     QVector<Price*> data = getCourseData(brainCurrentDate);
     listBrain[id]->dataPoney = data;
     listBrain[id]->expected = expected;
-    listBrain[id]->start();
+    listBrain[id]->run();
 }
 
 void Survey::onSomethingToSay(int value, QString message)

@@ -10,12 +10,22 @@ public:
     float ratioPoney;
     float ratioJockey;
     float ratioTrainer;
-    float previousRank;
-    float previous2Rank;
-    float previous3Rank;
     float age;
     float poids;
     float sexe;
+    float CoteProb;
+    float CoteDirect;
+    float Recence;
+    float MontesduJockeyJour;
+    float CourueJockeyJour;
+    float VictoireJocKeyJour;
+    float MonteEntraineurJour;
+    float MonteEntraineurJour;
+    float CourueEntraineurJour;
+    float VictoireEntraineurJour;
+    float DernierePlace;
+    float DerniereCote;
+    float NbCoursePropJour;
 };
 
 #endif // PONEY_H
