@@ -21,6 +21,9 @@ public:
     int id;
     int currentPrice;
     QDate currentDate;
+    QVector<float> coeff;
+    int nbSuccess;
+    int nbTry;
 signals:
     void cycleFinished(int);
     void wantMoreData(int id);
@@ -30,8 +33,7 @@ private:
     int nbPoney;
     QVector<Neuron*> listNeuron;
     int tri(QVector<float>);
-    int nbSuccess;
-    int nbTry;
+
     void init();
 
 };

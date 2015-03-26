@@ -26,7 +26,7 @@ signals:
     void somethingToSay(int,QString);
 private slots:
     void onCycleFinished(int);
-    void onNoMoreData(QVector<float>,float);
+   // void onNoMoreData(QVector<float>,float);
     void onWantMoreData(int);
     void onSomethingToSay(int,QString);
 private:
@@ -38,6 +38,8 @@ private:
     int currentPrice;
     QDate currentDate;
     QString filename;
+    int findTheBest();
+    QVector<float> listRatio;
 };
 
 #endif // SURVEY_H

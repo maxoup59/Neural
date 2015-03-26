@@ -29,16 +29,50 @@ void Survey::run()
     {
         qDebug() << "BDD OPEN";
     }
-    //initCourseData();
-    for (int i = 0 ;i < 5 ; i ++)
+
+    for (int i = 0 ;i < 2 ; i ++)
     {
+        QVector<float> coeff;
+        for (int i = 0; i < 25 ; i++)
+        {
+            float frandom = ((float)rand() / (float)RAND_MAX);
+            coeff.push_back(frandom);
+        }
         listBrain.push_back(new Brain());
         listBrain[i]->id = i;
         listBrain[i]->dataPoney = getCourseData(listBrain[i]->currentDate);
+        listBrain[i]->coeff = coeff;
         connect(listBrain[i],SIGNAL(cycleFinished(int)),this,SLOT(onCycleFinished(int)));
         connect(listBrain[i],SIGNAL(wantMoreData(int)),this,SLOT(onWantMoreData(int)));
         connect(listBrain[i],SIGNAL(somethingToSay(int,QString)),this,SLOT(onSomethingToSay(int,QString)));
         listBrain[i]->run();
+        float ratio = (float)listBrain[i]->nbSuccess / (float)listBrain[i]->nbTry;
+        listRatio.push_back(ratio);
+        listresult.push_back(listBrain[i]->coeff);
+    }
+    while(true)
+    {
+        int id = findTheBest();
+        qDebug() << "The best is " + QString::number(id);
+        for (int i = 0 ;i < 5 ; i ++)
+        {
+            QVector<float> coeff;
+            for (int i = 0; i < 25 ; i++)
+            {
+                float frandom = ((float)rand() / ((float)RAND_MAX*10));
+                coeff.push_back(listresult[id][i]+frandom);
+            }
+            listBrain[i] = (new Brain());
+            listBrain[i]->id = i;
+            listBrain[i]->dataPoney = getCourseData(listBrain[i]->currentDate);
+            connect(listBrain[i],SIGNAL(cycleFinished(int)),this,SLOT(onCycleFinished(int)));
+            connect(listBrain[i],SIGNAL(wantMoreData(int)),this,SLOT(onWantMoreData(int)));
+            connect(listBrain[i],SIGNAL(somethingToSay(int,QString)),this,SLOT(onSomethingToSay(int,QString)));
+            listBrain[i]->run();
+            float ratio = (float)listBrain[i]->nbSuccess / (float)listBrain[i]->nbTry;
+            listRatio.push_back(ratio);
+            listresult.push_back(listBrain[i]->coeff);
+        }
     }
 }
 
@@ -57,13 +91,13 @@ QVector<Price *> Survey::getCourseData(QDate pCurrentDate)
             temp->name = getDayPrix.value(0).toString();
             temp->nbOfPoney = getDayPrix.value(1).toString().toInt();
             QString queryGetData = "SELECT CoursesCheval,VictoiresCheval,PlacesCheval,CoursesEntraineur"
-                            ",VictoiresEntraineur,PlaceEntraineur,CoursesJockey,VictoiresJockey"
-                            ",PlaceJockey,SexeAge,partant,Arrive,CoteProb,CoteDirect"
-                            ",Recence,MontesduJockeyJour,CourueJockeyJour,VictoireJocKeyJour"
-                            ",MonteEntraineurJour,CourueEntraineurJour,VictoireEntraineurJour"
-                            ", DernierePlace,DerniereCote"
-                            ",NbCoursePropJour FROM PoneyDB where jour = '"+pCurrentDate.toString("yyyy-MM-dd")+"' and PMU = 'oui'"
-                                                                                                                                 " and prix ='" + temp->name +"'";
+                                   ",VictoiresEntraineur,PlaceEntraineur,CoursesJockey,VictoiresJockey"
+                                   ",PlaceJockey,SexeAge,partant,Arrive,CoteProb,CoteDirect"
+                                   ",Recence,MontesduJockeyJour,CourueJockeyJour,VictoireJocKeyJour"
+                                   ",MonteEntraineurJour,CourueEntraineurJour,VictoireEntraineurJour"
+                                   ", DernierePlace,DerniereCote"
+                                   ",NbCoursePropJour FROM PoneyDB where jour = '"+pCurrentDate.toString("yyyy-MM-dd")+"' and PMU = 'oui'"
+                                                                                                                       " and prix ='" + temp->name +"'";
             //qDebug() << queryGetData;
             QSqlQuery getData;
             if(!getData.exec(queryGetData))
@@ -126,7 +160,7 @@ void Survey::onCycleFinished(int value)
     qDebug() << "Cycle END";
 }
 
-void Survey::onNoMoreData(QVector<float> coeff, float ratio , int id)
+/*void Survey::onNoMoreData(QVector<float> coeff, float ratio , int id)
 {
     listresult.push_back(coeff);
     if(ratio > bestRatio)
@@ -138,7 +172,7 @@ void Survey::onNoMoreData(QVector<float> coeff, float ratio , int id)
     {
 
     }
-}
+}*/
 
 void Survey::onWantMoreData(int id)
 {
@@ -154,6 +188,23 @@ void Survey::onWantMoreData(int id)
 void Survey::onSomethingToSay(int value, QString message)
 {
     emit somethingToSay(value,message);
+}
+
+int Survey::findTheBest()
+{
+    float best = 0;
+    int id = -1;
+    for(int i = 0 ;i < listRatio.length() ;i++)
+    {
+        if(listRatio[i] >= best)
+        {
+            best = listRatio[i];
+            id = i;
+        }
+        qDebug() << "Ratio brain n :" + QString::number(i) + "is " + QString::number(listRatio[i]);
+    }
+
+    return id;
 }
 
 

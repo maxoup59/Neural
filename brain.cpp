@@ -3,7 +3,7 @@
 #include <QDebug>
 Brain::Brain()
 {
-    currentDate.setDate(2013,01,01);
+    currentDate.setDate(2015,01,01);
     currentPrice = 0;
     nbTry = 0;
     nbSuccess = 0;
@@ -20,12 +20,6 @@ void Brain::run()
     init();
     while(go)
     {
-        QVector<float> coeff;
-        for (int i = 0; i < 25 ; i++)
-        {
-            float frandom = ((float)rand() / (float)RAND_MAX);
-            coeff.push_back(frandom);
-        }
         for (int i = 0; i< dataPoney[currentPrice]->nbOfPoney ; i ++)
         {
             listNeuron[i]->setCoeff(coeff);
@@ -77,7 +71,7 @@ void Brain::run()
                 go = false;
                 qDebug() << "no more data";
                 float ratio = (float ) nbSuccess/(float) nbTry;
-                emit noMoreData(listNeuron[0]->getCoeff(),ratio);
+                //emit noMoreData(listNeuron[0]->getCoeff(),ratio);
             }
             else
             {
