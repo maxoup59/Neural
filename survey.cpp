@@ -11,6 +11,7 @@ Survey::Survey(QString pFilename)
     currentPrice =0;
     bestID = -1;
     bestRatio = 0;
+    nbOfBrain = 2;
 }
 
 Survey::~Survey()
@@ -30,7 +31,7 @@ void Survey::run()
         qDebug() << "BDD OPEN";
     }
 
-    for (int i = 0 ;i < 2 ; i ++)
+    for (int i = 0 ;i < nbOfBrain ; i ++)
     {
         QVector<float> coeff;
         for (int i = 0; i < 25 ; i++)
@@ -53,8 +54,9 @@ void Survey::run()
     while(true)
     {
         int id = findTheBest();
+        listRatio.clear();
         qDebug() << "The best is " + QString::number(id);
-        for (int i = 0 ;i < 5 ; i ++)
+        for (int brain = 0 ; brain < nbOfBrain ; brain ++)
         {
             QVector<float> coeff;
             for (int i = 0; i < 25 ; i++)
@@ -62,16 +64,17 @@ void Survey::run()
                 float frandom = ((float)rand() / ((float)RAND_MAX*10));
                 coeff.push_back(listresult[id][i]+frandom);
             }
-            listBrain[i] = (new Brain());
-            listBrain[i]->id = i;
-            listBrain[i]->dataPoney = getCourseData(listBrain[i]->currentDate);
-            connect(listBrain[i],SIGNAL(cycleFinished(int)),this,SLOT(onCycleFinished(int)));
-            connect(listBrain[i],SIGNAL(wantMoreData(int)),this,SLOT(onWantMoreData(int)));
-            connect(listBrain[i],SIGNAL(somethingToSay(int,QString)),this,SLOT(onSomethingToSay(int,QString)));
-            listBrain[i]->run();
-            float ratio = (float)listBrain[i]->nbSuccess / (float)listBrain[i]->nbTry;
+            listBrain[brain] = (new Brain());
+            listBrain[brain]->id = brain;
+            listBrain[brain]->coeff = coeff;
+            listBrain[brain]->dataPoney = getCourseData(listBrain[brain]->currentDate);
+            connect(listBrain[brain],SIGNAL(cycleFinished(int)),this,SLOT(onCycleFinished(int)));
+            connect(listBrain[brain],SIGNAL(wantMoreData(int)),this,SLOT(onWantMoreData(int)));
+            connect(listBrain[brain],SIGNAL(somethingToSay(int,QString)),this,SLOT(onSomethingToSay(int,QString)));
+            listBrain[brain]->run();
+            float ratio = (float)listBrain[brain]->nbSuccess / (float)listBrain[brain]->nbTry;
             listRatio.push_back(ratio);
-            listresult.push_back(listBrain[i]->coeff);
+            listresult.push_back(listBrain[brain]->coeff);
         }
     }
 }
@@ -176,7 +179,7 @@ void Survey::onCycleFinished(int value)
 
 void Survey::onWantMoreData(int id)
 {
-    qDebug() << "Brain nb : " +QString::number(id) + "Want more data";
+    qDebug() << "Brain nb : " + QString::number(id) + "Want more data";
     QDate brainCurrentDate = listBrain[id]->currentDate;
     qDebug() << brainCurrentDate.toString("yyyy-MM-dd");
     QVector<Price*> data = getCourseData(brainCurrentDate);
@@ -201,7 +204,7 @@ int Survey::findTheBest()
             best = listRatio[i];
             id = i;
         }
-        qDebug() << "Ratio brain n :" + QString::number(i) + "is " + QString::number(listRatio[i]);
+        qDebug() << "Ratio brain n :" + QString::number(i) + " is " + QString::number(listRatio[i]);
     }
 
     return id;

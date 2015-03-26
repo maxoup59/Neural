@@ -30,6 +30,7 @@ private slots:
     void onWantMoreData(int);
     void onSomethingToSay(int,QString);
 private:
+    int nbOfBrain;
     QVector<QString> listPriceCurrentDay;
     QVector<QVector<float> > listresult;
     int bestID;

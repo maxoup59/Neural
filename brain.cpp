@@ -91,6 +91,7 @@ void Brain::run()
 }
 void Brain::init()
 {
+        currentPrice = 0;
     QVector<float> coeff;
     for (int i = 0; i < 25 ; i++)
     {
