@@ -3,15 +3,16 @@
 #include <QDebug>
 #include "brain.h"
 #include "price.h"
+//#define int NB_BRAIN = 5
+
 Survey::Survey(QString pFilename)
 {
     filename = pFilename;
     db = QSqlDatabase::addDatabase("QSQLITE");
-    currentDate.setDate(2015,02,02);
-    currentPrice =0;
+    endDate.setDate(2015,01,02);
     bestID = -1;
-    bestRatio = 0;
-    nbOfBrain = 2;
+    NB_BRAIN = 2;
+    currentDate = 0;
 }
 
 Survey::~Survey()
@@ -21,63 +22,37 @@ Survey::~Survey()
 
 void Survey::run()
 {
-    db.setDatabaseName(filename);
-    if(!db.open() || !db.isValid())
+    initBDD();
+    initCoeff();
+    initData();
+    initBrain();
+    bool go = true;
+    while(go)
     {
-        qDebug() << "run : can't open DB";
-    }
-    else
-    {
-        qDebug() << "BDD OPEN";
-    }
-
-    for (int i = 0 ;i < nbOfBrain ; i ++)
-    {
-        QVector<float> coeff;
-        for (int i = 0; i < 25 ; i++)
-        {
-            float frandom = ((float)rand() / (float)RAND_MAX);
-            coeff.push_back(frandom);
-        }
-        listBrain.push_back(new Brain());
-        listBrain[i]->id = i;
-        listBrain[i]->dataPoney = getCourseData(listBrain[i]->currentDate);
-        listBrain[i]->coeff = coeff;
-        connect(listBrain[i],SIGNAL(cycleFinished(int)),this,SLOT(onCycleFinished(int)));
-        connect(listBrain[i],SIGNAL(wantMoreData(int)),this,SLOT(onWantMoreData(int)));
-        connect(listBrain[i],SIGNAL(somethingToSay(int,QString)),this,SLOT(onSomethingToSay(int,QString)));
-        listBrain[i]->run();
-        float ratio = (float)listBrain[i]->nbSuccess / (float)listBrain[i]->nbTry;
-        listRatio.push_back(ratio);
-        listresult.push_back(listBrain[i]->coeff);
-    }
-    while(true)
-    {
-        int id = findTheBest();
         listRatio.clear();
-        qDebug() << "The best is " + QString::number(id);
-        for (int brain = 0 ; brain < nbOfBrain ; brain ++)
+        for ( ; currentDate < data.length() ; currentDate++)
         {
-            QVector<float> coeff;
-            for (int i = 0; i < 25 ; i++)
+            for(int brain = 0 ; brain < NB_BRAIN ; brain++)
             {
-                float frandom = ((float)rand() / ((float)RAND_MAX*10));
-                coeff.push_back(listresult[id][i]+frandom);
+                listBrain[brain]->dataPoney = data[currentDate];
+                listBrain[brain]->coeff = coeff[brain];
+                listBrain[brain]->run();
             }
-            listBrain[brain] = (new Brain());
-            listBrain[brain]->id = brain;
-            listBrain[brain]->coeff = coeff;
-            listBrain[brain]->dataPoney = getCourseData(listBrain[brain]->currentDate);
-            connect(listBrain[brain],SIGNAL(cycleFinished(int)),this,SLOT(onCycleFinished(int)));
-            connect(listBrain[brain],SIGNAL(wantMoreData(int)),this,SLOT(onWantMoreData(int)));
-            connect(listBrain[brain],SIGNAL(somethingToSay(int,QString)),this,SLOT(onSomethingToSay(int,QString)));
-            listBrain[brain]->run();
+        }
+        for(int brain = 0 ; brain < NB_BRAIN ; brain++)
+        {
             float ratio = (float)listBrain[brain]->nbSuccess / (float)listBrain[brain]->nbTry;
             listRatio.push_back(ratio);
-            listresult.push_back(listBrain[brain]->coeff);
         }
+        int idBest = findTheBest();
+        for (int brain = 0 ; brain <= NB_BRAIN ; brain++)
+        {
+            generateNewCoeff(idBest);
+        }
+        qDebug() << "Cycle finished";
     }
 }
+
 
 QVector<Price *> Survey::getCourseData(QDate pCurrentDate)
 {
@@ -157,42 +132,6 @@ QVector<Price *> Survey::getCourseData(QDate pCurrentDate)
     return dataOfTheDay;
 }
 
-
-void Survey::onCycleFinished(int value)
-{
-    qDebug() << "Cycle END";
-}
-
-/*void Survey::onNoMoreData(QVector<float> coeff, float ratio , int id)
-{
-    listresult.push_back(coeff);
-    if(ratio > bestRatio)
-    {
-        bestRatio = ratio;
-        bestID = id;
-    }
-    if(listresult.length() == 5)
-    {
-
-    }
-}*/
-
-void Survey::onWantMoreData(int id)
-{
-    qDebug() << "Brain nb : " + QString::number(id) + "Want more data";
-    QDate brainCurrentDate = listBrain[id]->currentDate;
-    qDebug() << brainCurrentDate.toString("yyyy-MM-dd");
-    QVector<Price*> data = getCourseData(brainCurrentDate);
-    listBrain[id]->dataPoney = data;
-    listBrain[id]->expected = expected;
-    listBrain[id]->run();
-}
-
-void Survey::onSomethingToSay(int value, QString message)
-{
-    emit somethingToSay(value,message);
-}
-
 int Survey::findTheBest()
 {
     float best = 0;
@@ -206,8 +145,86 @@ int Survey::findTheBest()
         }
         qDebug() << "Ratio brain n :" + QString::number(i) + " is " + QString::number(listRatio[i]);
     }
-
     return id;
 }
+
+void Survey::initCoeff()
+{
+    coeff.clear();
+    for (int brain = 0 ; brain < NB_BRAIN ; brain++)
+    {
+        QVector<float> temp;
+        for (int i = 0; i < 25 ; i++)
+        {
+            float frandom = ((float)rand() / (float)RAND_MAX);
+            temp.push_back(frandom);
+        }
+        coeff.push_back(temp);
+    }
+}
+
+void Survey::initBrain()
+{
+    listBrain.clear();
+    for (int brain = 0; brain < NB_BRAIN ; brain ++)
+    {
+        listBrain.push_back(new Brain());
+        listBrain[brain]->id = brain;
+        connect(listBrain[brain],SIGNAL(cycleFinished(int)),this,SLOT(onCycleFinished(int)));
+        connect(listBrain[brain],SIGNAL(wantMoreData(int)),this,SLOT(onWantMoreData(int)));
+        connect(listBrain[brain],SIGNAL(somethingToSay(int,QString)),this,SLOT(onSomethingToSay(int,QString)));
+    }
+}
+
+void Survey::initData()
+{
+    data.clear();
+    QDate qCurrentDate(2015,01,01);
+    for ( ; qCurrentDate.toString("yyyy-MM-dd") != endDate.toString("yyyy-MM-dd") ; qCurrentDate  = qCurrentDate.addDays(1))
+    {
+        data.push_back(getCourseData(qCurrentDate));
+        qDebug() << "Data from " + qCurrentDate.toString("yyyy-MM-dd") + " loaded";
+    }
+}
+
+void Survey::initBDD()
+{
+    db.setDatabaseName(filename);
+    if(!db.open() || !db.isValid())
+    {
+        qDebug() << "Error when opening DB";
+    }
+    else
+    {
+        qDebug() << "DB loaded";
+    }
+
+}
+
+void Survey::generateNewCoeff(int idBest)
+{
+    for (int brain = 0 ; brain < NB_BRAIN ; brain++)
+    {
+        listBrain[brain]->coeff = listBrain[idBest]->coeff;
+        for (int i = 0; i < 25 ; i++)
+        {
+            float ratio = 1;
+            float ratioMutation = 0.2;
+            if(rand() < RAND_MAX * ratio)
+            {
+                float r = rand() * 2 - RAND_MAX;
+                r *= ratioMutation;
+                r /=  RAND_MAX;
+                coeff[brain][i] = r;
+                if(coeff[brain][i] > 1.0f)
+                    coeff[brain][i] = 1.0f;
+                if(coeff[brain][i] < -1.0f)
+                    coeff[brain][i] = -1.0f;
+            }
+        }
+    }
+}
+
+
 
 

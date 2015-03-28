@@ -25,13 +25,5 @@ void MainWindow::on_pushButton_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"../../../");
     Survey*test = new Survey(fileName);
-    connect(test,SIGNAL(somethingToSay(int,QString)),this,SLOT(onSomethingToSay(int,QString)));
-    test->nbPoney = 14;
-    //test->exec();
     test->start();
-}
-
-void MainWindow::onSomethingToSay(int value,QString message)
-{
-    label[value]->setText(message);
 }

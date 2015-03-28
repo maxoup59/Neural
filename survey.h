@@ -15,32 +15,36 @@ class Survey : public QThread
 public:
     Survey(QString filename = "test.dev.db");
     ~Survey();
-    void run();
-    QVector<Price *> getCourseData(QDate pCurrentDate);
-     QVector<Brain*> listBrain;
-    void initCourseData();
-    int nbPoney;
-    QSqlDatabase db;
-    int expected;
-signals:
-    void somethingToSay(int,QString);
-private slots:
-    void onCycleFinished(int);
-   // void onNoMoreData(QVector<float>,float);
-    void onWantMoreData(int);
-    void onSomethingToSay(int,QString);
+
 private:
-    int nbOfBrain;
-    QVector<QString> listPriceCurrentDay;
-    QVector<QVector<float> > listresult;
+    int NB_BRAIN;
     int bestID;
-    float bestRatio;
-    QVector<int> listNbPoneyByPrice;
-    int currentPrice;
-    QDate currentDate;
+    int currentDate;
+
     QString filename;
-    int findTheBest();
+    QDate endDate;
+    QSqlDatabase db;
+
+    QVector<QVector<float> > listresult;
+    QVector<QVector<float> > coeff;
+
+    QVector<QVector<Price*> > data;
+    QVector<Brain*> listBrain;
     QVector<float> listRatio;
+
+    void initCoeff();
+    void initBrain();
+    void initData();
+    void initBDD();
+
+    void initCourseData();
+    void generateNewCoeff(int idBest);
+
+    int findTheBest();
+    QVector<Price *> getCourseData(QDate pCurrentDate);
+
+    void run();
+
 };
 
 #endif // SURVEY_H

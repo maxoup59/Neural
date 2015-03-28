@@ -80,7 +80,7 @@ void Brain::run()
                 //qDebug() << currentDate.toString("yyyy-MM-dd");
                 currentDate = currentDate.addDays(1);
                 //qDebug() << currentDate.toString("yyyy-MM-dd");
-                emit wantMoreData(id);
+                //emit wantMoreData(id);
             }
         }
         else

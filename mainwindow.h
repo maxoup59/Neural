@@ -18,7 +18,6 @@ public:
 
 private slots:
     void on_pushButton_clicked();
-    void onSomethingToSay(int,QString);
 
 private:
     Ui::MainWindow *ui;
