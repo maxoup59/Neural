@@ -3,7 +3,6 @@
 #include <QDebug>
 #include "brain.h"
 #include "price.h"
-//#define int NB_BRAIN = 5
 
 Survey::Survey(QString pFilename)
 {
@@ -34,18 +33,18 @@ void Survey::run()
         {
             for(int brain = 0 ; brain < NB_BRAIN ; brain++)
             {
-                listBrain[brain]->dataPoney = data[currentDate];
-                listBrain[brain]->coeff = coeff[brain];
+                listBrain[brain]->setDataDay(data[currentDate]);
+                listBrain[brain]->setCoeff(coeff[brain]);
                 listBrain[brain]->run();
             }
         }
         for(int brain = 0 ; brain < NB_BRAIN ; brain++)
         {
-            float ratio = (float)listBrain[brain]->nbSuccess / (float)listBrain[brain]->nbTry;
+            float ratio = listBrain[brain]->getRatio();
             listRatio.push_back(ratio);
         }
         int idBest = findTheBest();
-        for (int brain = 0 ; brain <= NB_BRAIN ; brain++)
+        for (int brain = 0 ; brain < NB_BRAIN ; brain++)
         {
             generateNewCoeff(idBest);
         }
@@ -56,9 +55,7 @@ void Survey::run()
 
 QVector<Price *> Survey::getCourseData(QDate pCurrentDate)
 {
-    //Get list price of the day
     QVector<Price*> dataOfTheDay;
-    //QVector<Poney*> data;
     QString queryGetDayPrice = "SELECT prix,count() FROM PoneyDB where jour = '"+pCurrentDate.toString("yyyy-MM-dd")+"' and PMU = 'oui' group by prix";
     QSqlQuery getDayPrix;
     if(getDayPrix.exec(queryGetDayPrice))
@@ -74,9 +71,11 @@ QVector<Price *> Survey::getCourseData(QDate pCurrentDate)
                                    ",Recence,MontesduJockeyJour,CourueJockeyJour,VictoireJocKeyJour"
                                    ",MonteEntraineurJour,CourueEntraineurJour,VictoireEntraineurJour"
                                    ", DernierePlace,DerniereCote"
-                                   ",NbCoursePropJour FROM PoneyDB where jour = '"+pCurrentDate.toString("yyyy-MM-dd")+"' and PMU = 'oui'"
-                                                                                                                       " and prix ='" + temp->name +"'";
-            //qDebug() << queryGetData;
+                                   ",NbCoursePropJour FROM PoneyDB where jour = '"
+                                    + pCurrentDate.toString("yyyy-MM-dd")+"' and PMU = 'oui'"
+                                    + " and prix ='"
+                                    + temp->name
+                                    +"'";
             QSqlQuery getData;
             if(!getData.exec(queryGetData))
             {
@@ -169,10 +168,7 @@ void Survey::initBrain()
     for (int brain = 0; brain < NB_BRAIN ; brain ++)
     {
         listBrain.push_back(new Brain());
-        listBrain[brain]->id = brain;
-        connect(listBrain[brain],SIGNAL(cycleFinished(int)),this,SLOT(onCycleFinished(int)));
-        connect(listBrain[brain],SIGNAL(wantMoreData(int)),this,SLOT(onWantMoreData(int)));
-        connect(listBrain[brain],SIGNAL(somethingToSay(int,QString)),this,SLOT(onSomethingToSay(int,QString)));
+        listBrain[brain]->setID(brain);
     }
 }
 
@@ -205,7 +201,7 @@ void Survey::generateNewCoeff(int idBest)
 {
     for (int brain = 0 ; brain < NB_BRAIN ; brain++)
     {
-        listBrain[brain]->coeff = listBrain[idBest]->coeff;
+        listBrain[brain]->setCoeff(listBrain[idBest]->getCoeff());
         for (int i = 0; i < 25 ; i++)
         {
             float ratio = 1;

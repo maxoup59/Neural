@@ -3,10 +3,9 @@
 #include <QDebug>
 Brain::Brain()
 {
-    currentDate.setDate(2015,01,01);
-    currentPrice = 0;
     nbTry = 0;
     nbSuccess = 0;
+    NB_NEURON = 50;
 }
 
 Brain::~Brain()
@@ -14,123 +13,64 @@ Brain::~Brain()
 
 }
 
+
 void Brain::run()
 {
-    bool go = true;
     init();
-    while(go)
+    for (int price = 0 ;price < dataPoney.length() ; price++)
     {
-        for (int i = 0; i< dataPoney[currentPrice]->nbOfPoney ; i ++)
+        for (int poneyID = 0; poneyID < dataPoney[price]->nbOfPoney ; poneyID ++)
         {
-            listNeuron[i]->setCoeff(coeff);
+            listNeuron[poneyID]->setCoeff(coeff);
         }
-        QVector<float> result;
-        for (int i = 0 ; i < dataPoney[currentPrice]->nbOfPoney ; i ++)
+        for (int poneyID = 0 ; poneyID < dataPoney[price]->nbOfPoney ; poneyID ++)
         {
             QVector<float> input;
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->ratioPoney);
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->ratioJockey);
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->ratioTrainer);
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->sexe);
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->age);
-
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->CoteDirect);
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->CoteProb);
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->CourueEntraineurJour);
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->CourueJockeyJour);
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->DerniereCote);
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->DernierePlace);
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->MonteEntraineurJour);
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->MontesduJockeyJour);
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->NbCoursePropJour);
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->Recence);
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->VictoireEntraineurJour);
-            input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->VictoireJocKeyJour);
-
-            listNeuron[i]->setInput(input);
-            result.push_back((float)listNeuron[i]->think());
+            input.push_back(dataPoney[price]->listOfPoney[poneyID]->ratioPoney);
+            input.push_back(dataPoney[price]->listOfPoney[poneyID]->ratioJockey);
+            input.push_back(dataPoney[price]->listOfPoney[poneyID]->ratioTrainer);
+            input.push_back(dataPoney[price]->listOfPoney[poneyID]->sexe);
+            input.push_back(dataPoney[price]->listOfPoney[poneyID]->age);
+            input.push_back((float)dataPoney[price]->listOfPoney[poneyID]->CoteDirect);
+            input.push_back((float)dataPoney[price]->listOfPoney[poneyID]->CoteProb);
+            input.push_back((float)dataPoney[price]->listOfPoney[poneyID]->CourueEntraineurJour);
+            input.push_back((float)dataPoney[price]->listOfPoney[poneyID]->CourueJockeyJour);
+            input.push_back((float)dataPoney[price]->listOfPoney[poneyID]->DerniereCote);
+            input.push_back((float)dataPoney[price]->listOfPoney[poneyID]->DernierePlace);
+            input.push_back((float)dataPoney[price]->listOfPoney[poneyID]->MonteEntraineurJour);
+            input.push_back((float)dataPoney[price]->listOfPoney[poneyID]->MontesduJockeyJour);
+            input.push_back((float)dataPoney[price]->listOfPoney[poneyID]->NbCoursePropJour);
+            input.push_back((float)dataPoney[price]->listOfPoney[poneyID]->Recence);
+            input.push_back((float)dataPoney[price]->listOfPoney[poneyID]->VictoireEntraineurJour);
+            input.push_back((float)dataPoney[price]->listOfPoney[poneyID]->VictoireJocKeyJour);
+            listNeuron[poneyID]->setInput(input);
         }
-        QStringList first = dataPoney[currentPrice]->arrive.split("-");
-        // qDebug() << dataPoney[currentPrice]->arrive;
-        nbTry++;
-        if(nbTry%100 == 0)
+        QVector<float> result;
+        for (int poneyID = 0 ; poneyID < dataPoney[price]->nbOfPoney ; poneyID ++)
         {
-            qDebug() << "ID : " + QString::number(id) + "  " + QString::number(nbSuccess) + "/" + QString::number(nbTry);
-            //emit somethingToSay(id,QString::number(nbSuccess) + "/" + QString::number(nbTry));
+            result.push_back((float)listNeuron[poneyID]->think());
         }
-        int firstBrain = tri(result);
-        //qDebug() << QString::number(firstBrain) +" "+ first[0];
-        if(firstBrain == first[0].toInt())
+        QStringList bestPoneyReal = dataPoney[price]->arrive.split("-");
+        int bestPoneySimulation = tri(result);
+        if (bestPoneySimulation == bestPoneyReal[0].toInt())
         {
             nbSuccess++;
         }
-        if(currentPrice  == dataPoney.length() -1)
-        {
-            if(currentDate.toString("yyyy-MM-dd") == "2015-03-09")
-            {
-                go = false;
-                qDebug() << "no more data";
-                float ratio = (float ) nbSuccess/(float) nbTry;
-                //emit noMoreData(listNeuron[0]->getCoeff(),ratio);
-            }
-            else
-            {
-                go = true;
-                currentPrice = 0;
-                //qDebug() << currentDate.toString("yyyy-MM-dd");
-                currentDate = currentDate.addDays(1);
-                //qDebug() << currentDate.toString("yyyy-MM-dd");
-                //emit wantMoreData(id);
-            }
-        }
-        else
-        {
-            currentPrice++;
-        }
+        nbTry++;
     }
 }
+
 void Brain::init()
 {
-        currentPrice = 0;
-    QVector<float> coeff;
-    for (int i = 0; i < 25 ; i++)
+    listNeuron.clear();
+    for (int neuron = 0 ; neuron < NB_NEURON ; neuron++)
     {
-        float frandom = ((float)rand() / (float)RAND_MAX);
-        coeff.push_back(frandom);
-    }
-    for (int i = 0; i< 50 ; i ++)
-    {
-        Neuron * temp = new Neuron();
+        Neuron* temp = new Neuron();
         temp->setCoeff(coeff);
         listNeuron.push_back(temp);
     }
-    QVector<float> result;
-    for (int i = 0 ; i < dataPoney[currentPrice]->nbOfPoney ; i ++)
-    {
-        QVector<float> input;
-        input.push_back(dataPoney[currentPrice]->listOfPoney[i]->ratioPoney);
-        input.push_back(dataPoney[currentPrice]->listOfPoney[i]->ratioJockey);
-        input.push_back(dataPoney[currentPrice]->listOfPoney[i]->ratioTrainer);
-        input.push_back(dataPoney[currentPrice]->listOfPoney[i]->sexe);
-        input.push_back(dataPoney[currentPrice]->listOfPoney[i]->age);
-
-        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->CoteDirect);
-        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->CoteProb);
-        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->CourueEntraineurJour);
-        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->CourueJockeyJour);
-        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->DerniereCote);
-        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->DernierePlace);
-        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->MonteEntraineurJour);
-        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->MontesduJockeyJour);
-        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->NbCoursePropJour);
-        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->Recence);
-        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->VictoireEntraineurJour);
-        input.push_back((float)dataPoney[currentPrice]->listOfPoney[i]->VictoireJocKeyJour);
-
-        listNeuron[i]->setInput(input);
-        result.push_back((float)listNeuron[i]->think());
-    }
 }
+
 int Brain::tri(QVector<float> result)
 {
     float top = 0;

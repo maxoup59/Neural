@@ -2,40 +2,39 @@
 #define BRAIN_H
 
 #include <QThread>
-#include <QtGlobal>
 #include "neuron.h"
-#include "poney.h"
-#include <QDate>
 #include "price.h"
+
 class Brain : public QThread
 {
     Q_OBJECT
 public:
     Brain();
     ~Brain();
+
+    void setDataDay(QVector<Price*> pData) { dataPoney = pData;}
+    void setCoeff(QVector<float> pCoeff) { coeff = pCoeff;}
+    void setID(int pID) {id = pID;}
+
+    QVector<float> getCoeff() {return coeff;}
+    float getRatio() {return (float)nbSuccess / (float)nbTry;}
+    int getID() {return id;}
+
     void run();
-    void setFinDemandee(bool pFin){finDemandee=pFin;}
-    void setNbPoney(int pNbPoney){nbPoney=pNbPoney;}
-    QVector<Price*> dataPoney;
-    int expected;
-    int id;
-    int currentPrice;
-    QDate currentDate;
-    QVector<float> coeff;
+
+private:
+    int NB_NEURON;
+
     int nbSuccess;
     int nbTry;
-signals:
-    void cycleFinished(int);
-    void wantMoreData(int id);
-    void somethingToSay(int,QString);
-private:
-    bool finDemandee;
-    int nbPoney;
+    int id;
+
+    QVector<float> coeff;
+    QVector<Price*> dataPoney;
     QVector<Neuron*> listNeuron;
+
     int tri(QVector<float>);
-
     void init();
-
 };
 
 #endif // BRAIN_H

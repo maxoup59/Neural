@@ -4,11 +4,10 @@
 #include <QThread>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include "poney.h"
 #include <QDate>
-#include <QVector>
 #include "brain.h"
 #include "price.h"
+
 class Survey : public QThread
 {
     Q_OBJECT
@@ -44,7 +43,6 @@ private:
     QVector<Price *> getCourseData(QDate pCurrentDate);
 
     void run();
-
 };
 
 #endif // SURVEY_H
