@@ -18,7 +18,8 @@ class Survey : public QThread
 public:
     Survey(QString filename = "test.dev.db");
     ~Survey();
-
+signals:
+    void newRatioCalculated(int id,float value);
 private:
     int NB_BRAIN;
     int bestID;

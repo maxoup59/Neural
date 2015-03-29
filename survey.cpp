@@ -7,7 +7,7 @@ Survey::Survey(QString pFilename)
     db = QSqlDatabase::addDatabase("QSQLITE");
     endDate.setDate(2015,01,02);
     bestID = -1;
-    NB_BRAIN = 2;
+    NB_BRAIN = 5;
 }
 
 Survey::~Survey()
@@ -37,6 +37,7 @@ void Survey::run()
         for(int brain = 0 ; brain < NB_BRAIN ; brain++)
         {
             float ratio = listBrain[brain]->getRatio();
+            emit newRatioCalculated(brain,ratio);
             listRatio.push_back(ratio);
         }
         int idBest = findTheBest();
@@ -67,10 +68,10 @@ QVector<Price *> Survey::getCourseData(QDate pCurrentDate)
                                    ",MonteEntraineurJour,CourueEntraineurJour,VictoireEntraineurJour"
                                    ", DernierePlace,DerniereCote"
                                    ",NbCoursePropJour FROM PoneyDB where jour = '"
-                                    + pCurrentDate.toString("yyyy-MM-dd")+"' and PMU = 'oui'"
-                                    + " and prix ='"
-                                    + temp->name
-                                    +"'";
+                    + pCurrentDate.toString("yyyy-MM-dd")+"' and PMU = 'oui'"
+                    + " and prix ='"
+                    + temp->name
+                    +"'";
             QSqlQuery getData;
             if(!getData.exec(queryGetData))
             {
@@ -198,7 +199,7 @@ void Survey::generateNewCoeff(int idBest)
         listBrain[brain]->setCoeff(listBrain[idBest]->getCoeff());
         for (int i = 0; i < 25 ; i++)
         {
-            float ratio = 1;
+            float ratio = (rand()%10)*10+1;
             float ratioMutation = 0.2;
             if(rand() < RAND_MAX * ratio)
             {

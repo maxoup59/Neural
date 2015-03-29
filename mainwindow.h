@@ -21,7 +21,7 @@ public:
 
 private slots:
     void on_pushButton_clicked();
-
+    void onNewRatioCalculated(int id,float value);
 private:
     Ui::MainWindow *ui;
     QVector<QLabel*> label;

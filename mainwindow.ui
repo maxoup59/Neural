@@ -24,14 +24,14 @@
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Start learning</string>
     </property>
    </widget>
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>20</y>
+      <x>20</x>
+      <y>10</y>
       <width>171</width>
       <height>161</height>
      </rect>
@@ -44,7 +44,7 @@
       <rect>
        <x>20</x>
        <y>40</y>
-       <width>59</width>
+       <width>91</width>
        <height>16</height>
       </rect>
      </property>
@@ -70,7 +70,7 @@
       <rect>
        <x>20</x>
        <y>40</y>
-       <width>59</width>
+       <width>101</width>
        <height>16</height>
       </rect>
      </property>
@@ -96,7 +96,7 @@
       <rect>
        <x>20</x>
        <y>40</y>
-       <width>59</width>
+       <width>81</width>
        <height>16</height>
       </rect>
      </property>
@@ -122,7 +122,7 @@
       <rect>
        <x>20</x>
        <y>40</y>
-       <width>59</width>
+       <width>111</width>
        <height>16</height>
       </rect>
      </property>
@@ -148,7 +148,7 @@
       <rect>
        <x>20</x>
        <y>40</y>
-       <width>59</width>
+       <width>91</width>
        <height>16</height>
       </rect>
      </property>
