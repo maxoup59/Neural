@@ -1,8 +1,5 @@
 #include "survey.h"
-#include "poney.h"
-#include <QDebug>
-#include "brain.h"
-#include "price.h"
+
 
 Survey::Survey(QString pFilename)
 {
@@ -11,7 +8,6 @@ Survey::Survey(QString pFilename)
     endDate.setDate(2015,01,02);
     bestID = -1;
     NB_BRAIN = 2;
-    currentDate = 0;
 }
 
 Survey::~Survey()
@@ -29,7 +25,7 @@ void Survey::run()
     while(go)
     {
         listRatio.clear();
-        for ( ; currentDate < data.length() ; currentDate++)
+        for (currentDate = 0 ; currentDate < data.length() ; currentDate++)
         {
             for(int brain = 0 ; brain < NB_BRAIN ; brain++)
             {
@@ -48,7 +44,6 @@ void Survey::run()
         {
             generateNewCoeff(idBest);
         }
-        qDebug() << "Cycle finished";
     }
 }
 
@@ -175,8 +170,7 @@ void Survey::initBrain()
 void Survey::initData()
 {
     data.clear();
-    QDate qCurrentDate(2015,01,01);
-    for ( ; qCurrentDate.toString("yyyy-MM-dd") != endDate.toString("yyyy-MM-dd") ; qCurrentDate  = qCurrentDate.addDays(1))
+    for (QDate qCurrentDate(2015,01,01) ; qCurrentDate.toString("yyyy-MM-dd") != endDate.toString("yyyy-MM-dd") ; qCurrentDate  = qCurrentDate.addDays(1))
     {
         data.push_back(getCourseData(qCurrentDate));
         qDebug() << "Data from " + qCurrentDate.toString("yyyy-MM-dd") + " loaded";
@@ -211,7 +205,7 @@ void Survey::generateNewCoeff(int idBest)
                 float r = rand() * 2 - RAND_MAX;
                 r *= ratioMutation;
                 r /=  RAND_MAX;
-                coeff[brain][i] = r;
+                coeff[brain][i] += r;
                 if(coeff[brain][i] > 1.0f)
                     coeff[brain][i] = 1.0f;
                 if(coeff[brain][i] < -1.0f)

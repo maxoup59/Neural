@@ -1,12 +1,16 @@
 #ifndef SURVEY_H
 #define SURVEY_H
 
+#include <QDebug>
 #include <QThread>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QDate>
 #include "brain.h"
 #include "price.h"
+#include "poney.h"
+
+
 
 class Survey : public QThread
 {

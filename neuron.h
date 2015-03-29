@@ -2,6 +2,7 @@
 #define NEURON_H
 #include <QVector>
 #include <QtMath>
+#include <Qdebug>
 class Neuron
 {
 public:

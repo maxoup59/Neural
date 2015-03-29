@@ -1,6 +1,5 @@
 #include "brain.h"
-#include <cstdlib>
-#include <QDebug>
+
 Brain::Brain()
 {
     nbTry = 0;

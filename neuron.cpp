@@ -1,5 +1,5 @@
 #include "neuron.h"
-#include <Qdebug>
+
 Neuron::Neuron()
 {
 

@@ -4,6 +4,8 @@
 #include <QThread>
 #include "neuron.h"
 #include "price.h"
+#include <cstdlib>
+#include <QDebug>
 
 class Brain : public QThread
 {

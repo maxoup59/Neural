@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 #include <QLabel>
+#include <cstdlib>
+#include "survey.h"
+#include <QFileDialog>
 
 namespace Ui {
 class MainWindow;
