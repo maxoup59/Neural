@@ -105,7 +105,6 @@ QVector<Price *> Survey::getCourseData(QDate pCurrentDate)
                     data[nb]->ratioPoney = ratioPoney;
                     data[nb]->ratioTrainer = ratioTrainer;
                     data[nb]->ratioJockey = ratioJockey;
-
                     if(getData.value(9).toString()[0] == 'M')
                     {
                         data[nb]->sexe = 1;
@@ -138,8 +137,9 @@ int Survey::findTheBest()
             best = listRatio[i];
             id = i;
         }
-        qDebug() << "Ratio brain n :" + QString::number(i) + " is " + QString::number(listRatio[i]);
+       // qDebug() << "Ratio brain n :" + QString::number(i) + " is " + QString::number(listRatio[i]);
     }
+   // qDebug() << id;
     return id;
 }
 
@@ -194,26 +194,50 @@ void Survey::initBDD()
 
 void Survey::generateNewCoeff(int idBest)
 {
+    QVector<float> tempCoeff = listBrain[idBest]->getCoeff();
     for (int brain = 0 ; brain < NB_BRAIN ; brain++)
     {
-        listBrain[brain]->setCoeff(listBrain[idBest]->getCoeff());
-        for (int i = 0; i < 25 ; i++)
+        qDebug() << listBrain[idBest]->optimalMutationRatio;
+        if(brain != idBest)
         {
-            float ratio = (rand()%10)*10+1;
-            float ratioMutation = 0.2;
-            if(rand() < RAND_MAX * ratio)
+            coeff[brain] = tempCoeff;
+            for (int i = 0; i < 25 ; i++)
             {
-                float r = rand() * 2 - RAND_MAX;
-                r *= ratioMutation;
-                r /=  RAND_MAX;
-                coeff[brain][i] += r;
-                if(coeff[brain][i] > 1.0f)
-                    coeff[brain][i] = 1.0f;
-                if(coeff[brain][i] < -1.0f)
-                    coeff[brain][i] = -1.0f;
+                float ratio = 1;
+                float ratioMutation = listBrain[idBest]->optimalMutationRatio;
+
+                if(rand() < RAND_MAX * ratio)
+                {
+                    float r = rand() * 2 - RAND_MAX;
+                    r *= ratioMutation;
+                    r /=  RAND_MAX;
+                    coeff[brain][i] += r;
+                    if(coeff[brain][i] > 1.0f)
+                        coeff[brain][i] = 1.0f;
+                    if(coeff[brain][i] < -1.0f)
+                        coeff[brain][i] = -1.0f;
+                }
             }
         }
     }
+}
+
+float Survey::backPropagation()
+{
+    /*int nbPoney = 14;
+    int errorMax = qPow(2,nbPoney-1);
+    int resultatFound = 4;
+    QString realResult = "13 - 4 - 14 - 21";
+    float new ratio = 0.75;
+    QStringList resultat = realResult.split("-");
+    for (int i = 0; i < resultat.length() ; i++)
+    {
+        if (resultat[i].toInt() == resultatFound)
+        {
+            ratio = i/errorMax;
+        }
+    }*/
+    return 1;
 }
 
 

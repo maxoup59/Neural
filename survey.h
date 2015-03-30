@@ -43,6 +43,7 @@ private:
 
     void initCourseData();
     void generateNewCoeff(int idBest);
+    float backPropagation();
 
     int findTheBest();
     QVector<Price *> getCourseData(QDate pCurrentDate);

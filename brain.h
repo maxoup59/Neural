@@ -23,6 +23,7 @@ public:
     int getID() {return id;}
 
     void run();
+    float optimalMutationRatio;
 
 private:
     int NB_NEURON;
@@ -37,6 +38,7 @@ private:
 
     int tri(QVector<float>);
     void init();
+    QVector<float> findRange(int price);
 };
 
 #endif // BRAIN_H
