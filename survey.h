@@ -18,7 +18,7 @@ class Survey : public QThread
 public:
     Survey(QString filename = "test.dev.db");
     ~Survey();
-    float ratioMutation;
+
 signals:
     void newRatioCalculated(int id,float value);
 private:
@@ -44,7 +44,6 @@ private:
 
     void initCourseData();
     void generateNewCoeff(int idBest);
-    float backPropagation();
 
     int findTheBest();
     QVector<Price *> getCourseData(QDate pCurrentDate);

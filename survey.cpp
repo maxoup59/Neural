@@ -137,9 +137,7 @@ int Survey::findTheBest()
             best = listRatio[i];
             id = i;
         }
-       // qDebug() << "Ratio brain n :" + QString::number(i) + " is " + QString::number(listRatio[i]);
     }
-   // qDebug() << id;
     return id;
 }
 
@@ -204,7 +202,7 @@ void Survey::generateNewCoeff(int idBest)
             for (int i = 0; i < 25 ; i++)
             {
                 float ratio = 1;
-                ratioMutation = listBrain[idBest]->optimalMutationRatio;
+                float ratioMutation = listBrain[idBest]->optimalMutationRatio;
 
                 if(rand() < RAND_MAX * ratio)
                 {
@@ -221,25 +219,6 @@ void Survey::generateNewCoeff(int idBest)
         }
     }
 }
-
-float Survey::backPropagation()
-{
-    /*int nbPoney = 14;
-    int errorMax = qPow(2,nbPoney-1);
-    int resultatFound = 4;
-    QString realResult = "13 - 4 - 14 - 21";
-    float new ratio = 0.75;
-    QStringList resultat = realResult.split("-");
-    for (int i = 0; i < resultat.length() ; i++)
-    {
-        if (resultat[i].toInt() == resultatFound)
-        {
-            ratio = i/errorMax;
-        }
-    }*/
-    return 1;
-}
-
 
 
 
