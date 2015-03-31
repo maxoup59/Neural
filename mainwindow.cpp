@@ -22,7 +22,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"../../../");
-    Survey* survey = new Survey(fileName);
+    survey = new Survey(fileName);
     connect(survey,SIGNAL(newRatioCalculated(int,float)),this,SLOT(onNewRatioCalculated(int,float)));
     survey->start();
 }
@@ -32,3 +32,9 @@ void MainWindow::onNewRatioCalculated(int id, float value)
         label[id]->setText(QString::number(value*100));
 }
 
+
+
+void MainWindow::on_doubleSpinBox_valueChanged(double arg1)
+{
+        //survey->ratioMutation = arg1;
+}

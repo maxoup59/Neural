@@ -5,7 +5,7 @@ Survey::Survey(QString pFilename)
 {
     filename = pFilename;
     db = QSqlDatabase::addDatabase("QSQLITE");
-    endDate.setDate(2015,01,02);
+    endDate.setDate(2015,01,06);
     bestID = -1;
     NB_BRAIN = 5;
 }
@@ -204,7 +204,7 @@ void Survey::generateNewCoeff(int idBest)
             for (int i = 0; i < 25 ; i++)
             {
                 float ratio = 1;
-                float ratioMutation = listBrain[idBest]->optimalMutationRatio;
+                ratioMutation = listBrain[idBest]->optimalMutationRatio;
 
                 if(rand() < RAND_MAX * ratio)
                 {

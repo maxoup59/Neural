@@ -22,9 +22,13 @@ public:
 private slots:
     void on_pushButton_clicked();
     void onNewRatioCalculated(int id,float value);
+
+    void on_doubleSpinBox_valueChanged(double arg1);
+
 private:
     Ui::MainWindow *ui;
     QVector<QLabel*> label;
+    Survey* survey;
 };
 
 #endif // MAINWINDOW_H

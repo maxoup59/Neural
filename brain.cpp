@@ -61,18 +61,24 @@ void Brain::run()
         else
         {
             int nbPoney = dataPoney[price]->nbOfPoney;
+            bool find = false;
             for (int i = 0 ;i < bestPoneyReal.length(); i++)
             {
                 if(bestPoneyReal[i].toInt() == bestPoneySimulation)
                 {
-                    optimalMutationRatio += (float)i/((float)nbPoney-1);
+                    optimalMutationRatio += (float)(i-1)/((float)nbPoney);
+                    find = true;
                 }
+            }
+            if (!find)
+            {
+                optimalMutationRatio += 0.714;
             }
         }
         nbTry++;
     }
     optimalMutationRatio /= dataPoney.length();
-    optimalMutationRatio = 1 - optimalMutationRatio;
+   // optimalMutationRatio = 1 - optimalMutationRatio;
 }
 
 void Brain::init()
